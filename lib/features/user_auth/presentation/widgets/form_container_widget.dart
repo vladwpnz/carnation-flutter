@@ -1,10 +1,6 @@
-
-
 import 'package:flutter/material.dart';
 
-
 class FormContainerWidget extends StatefulWidget {
-
   final TextEditingController? controller;
   final Key? fieldKey;
   final bool? isPasswordField;
@@ -15,8 +11,11 @@ class FormContainerWidget extends StatefulWidget {
   final FormFieldValidator<String>? validator;
   final ValueChanged<String>? onFieldSubmitted;
   final TextInputType? inputType;
+  final TextInputAction? textInputAction;
+  final bool enabled;
 
   const FormContainerWidget({
+    super.key,
     this.controller,
     this.isPasswordField,
     this.fieldKey,
@@ -26,18 +25,17 @@ class FormContainerWidget extends StatefulWidget {
     this.onSaved,
     this.validator,
     this.onFieldSubmitted,
-    this.inputType
+    this.inputType,
+    this.textInputAction,
+    this.enabled = true,
   });
 
-
   @override
-  _FormContainerWidgetState createState() => new _FormContainerWidgetState();
+  State<FormContainerWidget> createState() => _FormContainerWidgetState();
 }
 
 class _FormContainerWidgetState extends State<FormContainerWidget> {
-
   bool _obscureText = true;
-
 
   @override
   Widget build(BuildContext context) {
@@ -45,32 +43,40 @@ class _FormContainerWidgetState extends State<FormContainerWidget> {
       width: double.infinity,
       clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(
-        color: Colors.grey.withOpacity(.35),
+        color: Colors.grey.withValues(alpha: 0.35),
         borderRadius: BorderRadius.circular(10),
       ),
-      child: new TextFormField(
-        style: TextStyle(color: Colors.black),
+      child: TextFormField(
+        style: const TextStyle(color: Colors.black),
         controller: widget.controller,
         keyboardType: widget.inputType,
+        textInputAction: widget.textInputAction,
         key: widget.fieldKey,
-        obscureText: widget.isPasswordField == true? _obscureText : false,
+        enabled: widget.enabled,
+        obscureText: widget.isPasswordField == true ? _obscureText : false,
         onSaved: widget.onSaved,
         validator: widget.validator,
         onFieldSubmitted: widget.onFieldSubmitted,
-        decoration: new InputDecoration(
+        decoration: InputDecoration(
           border: InputBorder.none,
           filled: true,
           hintText: widget.hintText,
-          hintStyle: TextStyle(color: Colors.black45),
-          suffixIcon: new GestureDetector(
-            onTap: () {
-              setState(() {
-                _obscureText = !_obscureText;
-              });
-            },
-            child:
-            widget.isPasswordField==true? Icon(_obscureText ? Icons.visibility_off : Icons.visibility, color: _obscureText == false ? Colors.blue : Colors.grey,) : Text(""),
-          ),
+          labelText: widget.labelText,
+          helperText: widget.helperText,
+          hintStyle: const TextStyle(color: Colors.black45),
+          suffixIcon: widget.isPasswordField == true
+              ? GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _obscureText = !_obscureText;
+                    });
+                  },
+                  child: Icon(
+                    _obscureText ? Icons.visibility_off : Icons.visibility,
+                    color: _obscureText == false ? Colors.blue : Colors.grey,
+                  ),
+                )
+              : null,
         ),
       ),
     );
