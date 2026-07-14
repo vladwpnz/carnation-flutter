@@ -1,12 +1,14 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:motor_show/features/user_auth/presentation/pages/login_page.dart';
-import 'package:motor_show/features/user_auth/presentation/pages/purchase_page.dart';
+import 'package:motor_show/features/user_auth/firebase_auth_implementation/firebase_auth_service.dart';
 import 'package:motor_show/features/user_auth/presentation/pages/profile_page.dart';
+import 'package:motor_show/features/user_auth/presentation/pages/purchase_page.dart';
 import 'package:page_transition/page_transition.dart';
 
 class HomePage extends StatelessWidget {
-  HomePage({Key? key}) : super(key: key);
+  final FirebaseAuthService _authService;
+
+  HomePage({super.key, FirebaseAuthService? authService})
+      : _authService = authService ?? const FirebaseAuthService();
 
   final List<Map<String, dynamic>> cars = [
     {
@@ -39,34 +41,31 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Home Page"),
+        title: const Text("Home Page"),
         actions: [
           IconButton(
-            icon: Icon(Icons.logout),
-            onPressed: () {
-              FirebaseAuth.instance.signOut();
-              Navigator.pushReplacement(
-                context,
-                PageTransition(type: PageTransitionType.fade, child: LoginPage()),
-              );
-            },
+            icon: const Icon(Icons.logout),
+            onPressed: () => _signOut(context),
           ),
           GestureDetector(
             onTap: () {
               Navigator.push(
                 context,
-                PageTransition(type: PageTransitionType.fade, child: ProfilePage()),
+                PageTransition(
+                  type: PageTransitionType.fade,
+                  child: const ProfilePage(),
+                ),
               );
             },
-            child: CircleAvatar(
+            child: const CircleAvatar(
               backgroundImage: AssetImage('assets/profile_picture.jpg'),
             ),
           ),
-          SizedBox(width: 10),
+          const SizedBox(width: 10),
         ],
       ),
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -100,6 +99,23 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
+
+  Future<void> _signOut(BuildContext context) async {
+    try {
+      await _authService.signOut();
+      if (!context.mounted) {
+        return;
+      }
+      Navigator.of(context).popUntil((route) => route.isFirst);
+    } on AuthServiceException catch (error) {
+      if (!context.mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(error.message)),
+      );
+    }
+  }
 }
 
 class CarItem extends StatelessWidget {
@@ -109,6 +125,7 @@ class CarItem extends StatelessWidget {
   final String? price;
 
   const CarItem({
+    super.key,
     this.name,
     this.description,
     this.image,
@@ -118,9 +135,9 @@ class CarItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.all(10),
+      margin: const EdgeInsets.all(10),
       child: Padding(
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         child: Row(
           children: [
             Padding(
@@ -131,24 +148,24 @@ class CarItem extends StatelessWidget {
                 fit: BoxFit.contain,
               ),
             ),
-            SizedBox(width: 10),
+            const SizedBox(width: 10),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     name!,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
                     ),
                   ),
-                  SizedBox(height: 5),
+                  const SizedBox(height: 5),
                   Text(description!),
-                  SizedBox(height: 5),
+                  const SizedBox(height: 5),
                   Text(
                     price!,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                       color: Colors.blue,
@@ -157,7 +174,7 @@ class CarItem extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(width: 10),
+            const SizedBox(width: 10),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
@@ -173,7 +190,7 @@ class CarItem extends StatelessWidget {
                   ),
                 );
               },
-              child: Text("Buy"),
+              child: const Text("Buy"),
             ),
           ],
         ),
