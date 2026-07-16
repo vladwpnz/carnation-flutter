@@ -1,18 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:carnation/core/navigation/carnation_route.dart';
 import 'package:carnation/core/theme/carnation_theme.dart';
 import 'package:carnation/features/cars/domain/car.dart';
+import 'package:carnation/features/requests/data/vehicle_request_repository.dart';
 import 'package:carnation/features/requests/domain/additional_service.dart';
+import 'package:carnation/features/requests/domain/vehicle_request.dart';
+import 'package:carnation/features/requests/presentation/pages/my_requests_page.dart';
+import 'package:carnation/features/requests/presentation/widgets/request_status_badge.dart';
 
 class RequestConfirmationPage extends StatelessWidget {
+  final String requestId;
   final Car car;
   final List<AdditionalService> selectedServices;
   final int estimatedTotal;
+  final VehicleRequestRepository requestRepository;
 
   const RequestConfirmationPage({
     super.key,
+    required this.requestId,
     required this.car,
     required this.selectedServices,
     required this.estimatedTotal,
+    required this.requestRepository,
   });
 
   @override
@@ -67,8 +76,23 @@ class RequestConfirmationPage extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 12),
+                      Text(
+                        shortVehicleRequestDisplayId(requestId),
+                        key: const Key('submitted-request-id'),
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: CarNationColors.accentSoft,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      const RequestStatusBadge(
+                        status: VehicleRequestStatus.submitted,
+                      ),
+                      const SizedBox(height: 16),
                       const Text(
-                        'Your vehicle request has been prepared. A CarNation representative will contact you with the next steps.',
+                        'Your vehicle request has been saved. Its status will appear in My requests.',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: CarNationColors.textSecondary,
@@ -98,6 +122,22 @@ class RequestConfirmationPage extends StatelessWidget {
                       SizedBox(
                         width: double.infinity,
                         child: FilledButton.icon(
+                          key: const Key('view-my-requests'),
+                          onPressed: () => Navigator.of(context).push(
+                            carNationRoute<void>(
+                              builder: (_) => MyRequestsPage(
+                                requestRepository: requestRepository,
+                              ),
+                            ),
+                          ),
+                          icon: const Icon(Icons.receipt_long_outlined),
+                          label: const Text('View my requests'),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton.icon(
                           onPressed: () => Navigator.of(context).popUntil(
                             (route) => route.isFirst,
                           ),

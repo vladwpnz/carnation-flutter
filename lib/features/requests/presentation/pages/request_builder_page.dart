@@ -4,17 +4,20 @@ import 'package:carnation/core/theme/carnation_theme.dart';
 import 'package:carnation/features/cars/domain/car.dart';
 import 'package:carnation/features/requests/application/request_builder_controller.dart';
 import 'package:carnation/features/requests/data/local_service_catalog.dart';
+import 'package:carnation/features/requests/data/vehicle_request_repository.dart';
 import 'package:carnation/features/requests/domain/additional_service.dart';
 import 'package:carnation/features/requests/presentation/pages/request_confirmation_page.dart';
 
 class RequestBuilderPage extends StatefulWidget {
   final Car car;
   final RequestBuilderController? controller;
+  final VehicleRequestRepository? requestRepository;
 
   const RequestBuilderPage({
     super.key,
     required this.car,
     this.controller,
+    this.requestRepository,
   });
 
   @override
@@ -24,6 +27,10 @@ class RequestBuilderPage extends StatefulWidget {
 class _RequestBuilderPageState extends State<RequestBuilderPage> {
   late final RequestBuilderController _controller;
   late final bool _ownsController;
+  late final VehicleRequestRepository _requestRepository;
+  bool _confirmationOpen = false;
+  bool _isSubmitting = false;
+  String? _submissionError;
 
   @override
   void initState() {
@@ -31,6 +38,8 @@ class _RequestBuilderPageState extends State<RequestBuilderPage> {
     _controller = widget.controller ??
         RequestBuilderController(basePrice: widget.car.price);
     _ownsController = widget.controller == null;
+    _requestRepository =
+        widget.requestRepository ?? const FirestoreVehicleRequestRepository();
   }
 
   @override
@@ -99,11 +108,30 @@ class _RequestBuilderPageState extends State<RequestBuilderPage> {
                             width: double.infinity,
                             child: FilledButton.icon(
                               key: const Key('submit-request'),
-                              onPressed: _confirmAndSubmit,
-                              icon: const Icon(Icons.send_rounded),
-                              label: const Text('Submit request'),
+                              onPressed: _isSubmitting || _confirmationOpen
+                                  ? null
+                                  : _confirmAndSubmit,
+                              icon: _isSubmitting
+                                  ? const SizedBox(
+                                      key: Key('submit-request-loading'),
+                                      width: 18,
+                                      height: 18,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                  : const Icon(Icons.send_rounded),
+                              label: Text(
+                                _isSubmitting
+                                    ? 'Submitting...'
+                                    : 'Submit request',
+                              ),
                             ),
                           ),
+                          if (_submissionError != null) ...[
+                            const SizedBox(height: 12),
+                            _SubmissionError(message: _submissionError!),
+                          ],
                           const SizedBox(height: 8),
                           const Text(
                             'This estimate is not a purchase or reservation.',
@@ -127,6 +155,14 @@ class _RequestBuilderPageState extends State<RequestBuilderPage> {
   }
 
   Future<void> _confirmAndSubmit() async {
+    if (_isSubmitting || _confirmationOpen) {
+      return;
+    }
+
+    setState(() {
+      _confirmationOpen = true;
+      _submissionError = null;
+    });
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {
@@ -149,19 +185,113 @@ class _RequestBuilderPageState extends State<RequestBuilderPage> {
       },
     );
 
-    if (confirmed != true || !mounted) {
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      _confirmationOpen = false;
+    });
+
+    if (confirmed != true || _isSubmitting) {
       return;
     }
 
-    Navigator.of(context).push(
-      carNationRoute<void>(
-        builder: (_) => RequestConfirmationPage(
-          car: widget.car,
-          selectedServices: List<AdditionalService>.of(
-            _controller.selectedServices,
+    final authenticatedUser = _requestRepository.currentUser;
+    if (authenticatedUser == null) {
+      setState(() {
+        _submissionError =
+            'Sign in with an email account before submitting a request.';
+      });
+      return;
+    }
+
+    final selectedServices = List<AdditionalService>.of(
+      _controller.selectedServices,
+    );
+    final servicesSubtotal = _controller.servicesSubtotal;
+    final estimatedTotal = _controller.estimatedTotal;
+
+    setState(() {
+      _isSubmitting = true;
+      _submissionError = null;
+    });
+
+    try {
+      final requestId = await _requestRepository.createRequest(
+        car: widget.car,
+        selectedServices: selectedServices,
+        servicesSubtotal: servicesSubtotal,
+        estimatedTotal: estimatedTotal,
+      );
+      if (!mounted) {
+        return;
+      }
+
+      Navigator.of(context).push(
+        carNationRoute<void>(
+          builder: (_) => RequestConfirmationPage(
+            requestId: requestId,
+            car: widget.car,
+            selectedServices: selectedServices,
+            estimatedTotal: estimatedTotal,
+            requestRepository: _requestRepository,
           ),
-          estimatedTotal: _controller.estimatedTotal,
         ),
+      );
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _submissionError = _readableSubmissionError(error);
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSubmitting = false;
+        });
+      }
+    }
+  }
+
+  String _readableSubmissionError(Object error) {
+    if (error is VehicleRequestRepositoryException) {
+      return error.message;
+    }
+    return 'The request could not be submitted. Please try again.';
+  }
+}
+
+class _SubmissionError extends StatelessWidget {
+  final String message;
+
+  const _SubmissionError({required this.message});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      key: const Key('request-submission-error'),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: CarNationColors.warningSurface,
+        borderRadius: BorderRadius.circular(CarNationRadii.control),
+        border: Border.all(color: CarNationColors.warning),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(Icons.error_outline, color: CarNationColors.warning),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              message,
+              style: const TextStyle(
+                color: CarNationColors.textPrimary,
+                height: 1.4,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
