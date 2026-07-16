@@ -1,9 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:motor_show/core/theme/carnation_theme.dart';
 import 'package:motor_show/features/user_auth/data/profile_repository.dart';
 import 'package:motor_show/features/user_auth/domain/auth_validators.dart';
 import 'package:motor_show/features/user_auth/firebase_auth_implementation/firebase_auth_service.dart';
 import 'package:motor_show/features/user_auth/presentation/pages/login_page.dart';
+import 'package:motor_show/features/user_auth/presentation/widgets/auth_brand_header.dart';
+import 'package:motor_show/features/user_auth/presentation/widgets/auth_page_shell.dart';
+import 'package:motor_show/features/user_auth/presentation/widgets/auth_primary_button.dart';
 import 'package:motor_show/features/user_auth/presentation/widgets/form_container_widget.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -44,149 +48,102 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Sign Up"),
-      ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.blue, Colors.white70],
-          ),
-        ),
-        child: Center(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      'assets/company_logo.png',
-                      width: 200,
-                      height: 100,
-                    ),
-                    const SizedBox(height: 20),
-                    const Text(
-                      "Sign Up",
-                      style: TextStyle(
-                        fontSize: 27,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 30),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.8),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: FormContainerWidget(
-                        controller: _usernameController,
-                        hintText: "Username",
-                        isPasswordField: false,
-                        textInputAction: TextInputAction.next,
-                        validator: AuthValidators.username,
-                        enabled: !_isSigningUp,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.8),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: FormContainerWidget(
-                        controller: _emailController,
-                        hintText: "Email",
-                        isPasswordField: false,
-                        inputType: TextInputType.emailAddress,
-                        textInputAction: TextInputAction.next,
-                        validator: AuthValidators.email,
-                        enabled: !_isSigningUp,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.8),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: FormContainerWidget(
-                        controller: _passwordController,
-                        hintText: "Password",
-                        isPasswordField: true,
-                        textInputAction: TextInputAction.done,
-                        validator: AuthValidators.password,
-                        enabled: !_isSigningUp,
-                        onFieldSubmitted: (_) => _signUp(),
-                      ),
-                    ),
-                    const SizedBox(height: 30),
-                    GestureDetector(
-                      onTap: _isSigningUp ? null : _signUp,
-                      child: Container(
-                        width: double.infinity,
-                        height: 45,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Center(
-                          child: _isSigningUp
-                              ? const CircularProgressIndicator(
-                                  color: Colors.blue,
-                                )
-                              : const Text(
-                                  "Sign Up",
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text("Already have an account?"),
-                        const SizedBox(width: 5),
-                        GestureDetector(
-                          onTap: _isSigningUp
-                              ? null
-                              : () {
-                                  if (Navigator.of(context).canPop()) {
-                                    Navigator.of(context).pop();
-                                    return;
-                                  }
+    final canGoBack = Navigator.of(context).canPop();
 
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const LoginPage(),
-                                    ),
-                                  );
-                                },
-                          child: const Text(
-                            "Log In",
-                            style: TextStyle(
-                              color: Colors.blue,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+    return AuthPageShell(
+      topAction: canGoBack
+          ? IconButton(
+              tooltip: 'Back',
+              onPressed: () => Navigator.of(context).maybePop(),
+              icon: const Icon(Icons.arrow_back_rounded),
+            )
+          : null,
+      child: AutofillGroup(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const AuthBrandHeader(
+              title: 'Create your account',
+              supportingText: 'Enter your details to get started',
+            ),
+            const SizedBox(height: 24),
+            Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  FormContainerWidget(
+                    controller: _usernameController,
+                    labelText: 'Username',
+                    hintText: 'Your display name',
+                    prefixIcon: Icons.person_outline_rounded,
+                    isPasswordField: false,
+                    textInputAction: TextInputAction.next,
+                    autofillHints: const [AutofillHints.username],
+                    textCapitalization: TextCapitalization.words,
+                    validator: AuthValidators.username,
+                    enabled: !_isSigningUp,
+                  ),
+                  const SizedBox(height: 14),
+                  FormContainerWidget(
+                    controller: _emailController,
+                    labelText: 'Email',
+                    hintText: 'you@example.com',
+                    prefixIcon: Icons.email_outlined,
+                    isPasswordField: false,
+                    inputType: TextInputType.emailAddress,
+                    textInputAction: TextInputAction.next,
+                    autofillHints: const [AutofillHints.email],
+                    validator: AuthValidators.email,
+                    enabled: !_isSigningUp,
+                  ),
+                  const SizedBox(height: 14),
+                  FormContainerWidget(
+                    controller: _passwordController,
+                    labelText: 'Password',
+                    hintText: 'At least 6 characters',
+                    prefixIcon: Icons.lock_outline_rounded,
+                    isPasswordField: true,
+                    textInputAction: TextInputAction.done,
+                    autofillHints: const [AutofillHints.newPassword],
+                    validator: AuthValidators.password,
+                    enabled: !_isSigningUp,
+                    onFieldSubmitted: (_) => _signUp(),
+                  ),
+                  const SizedBox(height: 24),
+                  AuthPrimaryButton(
+                    label: 'Create account',
+                    loadingLabel: 'Creating account...',
+                    icon: Icons.person_add_alt_1_rounded,
+                    isLoading: _isSigningUp,
+                    onPressed: _signUp,
+                  ),
+                ],
               ),
             ),
-          ),
+            const SizedBox(height: 14),
+            Wrap(
+              alignment: WrapAlignment.center,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 4,
+              children: [
+                const Text(
+                  'Already have an account?',
+                  style: TextStyle(
+                    color: CarNationColors.textSecondary,
+                    fontSize: 14,
+                  ),
+                ),
+                TextButton(
+                  onPressed: _isSigningUp ? null : _openLogin,
+                  child: const Text(
+                    'Log In',
+                    style: TextStyle(fontWeight: FontWeight.w800),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
@@ -245,6 +202,20 @@ class _SignUpPageState extends State<SignUpPage> {
     }
   }
 
+  void _openLogin() {
+    if (Navigator.of(context).canPop()) {
+      Navigator.of(context).pop();
+      return;
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const LoginPage(),
+      ),
+    );
+  }
+
   void _showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message)),
@@ -252,24 +223,52 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   void _showPartialSetupError(String code) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'Account created, but profile setup could not be completed. '
-          'You are signed in with your email fallback. '
-          'Setup error: $code.',
-        ),
-      ),
+    _showProfileSyncMessage(
+      message:
+          'Account created, but profile setup is temporarily unavailable. Your email account details will be used instead.',
+      code: code,
     );
   }
 
   void _showPartialProfileError(String code) {
+    _showProfileSyncMessage(
+      message:
+          'Account created, but profile sync is currently unavailable. Your username and email will be used instead.',
+      code: code,
+    );
+  }
+
+  void _showProfileSyncMessage({
+    required String message,
+    required String code,
+  }) {
+    final sanitizedCode = code.replaceAll(RegExp(r'[^a-zA-Z0-9_-]'), '');
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          'Account created, but profile data could not be saved. '
-          'You are signed in with your username and email fallback. '
-          'Profile sync error: $code.',
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              message,
+              style: const TextStyle(
+                color: CarNationColors.textPrimary,
+                fontWeight: FontWeight.w700,
+                height: 1.35,
+              ),
+            ),
+            if (sanitizedCode.isNotEmpty) ...[
+              const SizedBox(height: 5),
+              Text(
+                'Technical code: $sanitizedCode',
+                style: const TextStyle(
+                  color: CarNationColors.textMuted,
+                  fontSize: 11,
+                ),
+              ),
+            ],
+          ],
         ),
       ),
     );

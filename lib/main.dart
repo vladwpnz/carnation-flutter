@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:motor_show/core/theme/carnation_theme.dart';
 import 'package:motor_show/features/app/splash_screen/splash_screen.dart';
 import 'package:motor_show/features/user_auth/firebase_auth_implementation/firebase_auth_service.dart';
 import 'package:motor_show/features/user_auth/presentation/pages/home_page.dart';
@@ -49,7 +50,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Firebase',
+      title: 'CarNation',
+      theme: CarNationTheme.dark,
       home: AuthGate(
         authService: authService,
         authStateChanges: authStateChanges,
@@ -91,7 +93,7 @@ class AuthGate extends StatelessWidget {
         }
 
         if (snapshot.data != null) {
-          return HomePage();
+          return const HomePage();
         }
 
         return const LoginPage();
