@@ -1,0 +1,124 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwnUserDocument(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    match /users/{userId} {
+      allow read: if isOwnUserDocument(userId);
+
+      allow create, update: if isOwnUserDocument(userId)
+        && request.resource.data.uid == userId
+        && request.resource.data.keys().hasOnly([
+          'uid',
+          'username',
+          'email',
+          'createdAt'
+        ]);
+
+      allow delete: if false;
+    }
+
+    match /requests/{requestId} {
+      function hasExpectedRequestKeys() {
+        return request.resource.data.keys().hasAll([
+          'userId',
+          'contactEmail',
+          'car',
+          'services',
+          'servicesSubtotal',
+          'estimatedTotal',
+          'status',
+          'createdAt',
+          'updatedAt'
+        ]) && request.resource.data.keys().hasOnly([
+          'userId',
+          'contactEmail',
+          'car',
+          'services',
+          'servicesSubtotal',
+          'estimatedTotal',
+          'status',
+          'createdAt',
+          'updatedAt'
+        ]);
+      }
+
+      function hasValidCarSnapshot() {
+        return request.resource.data.car is map
+          && request.resource.data.car.keys().hasAll([
+            'id',
+            'displayName',
+            'modelYear',
+            'imageAssetPath',
+            'basePrice'
+          ])
+          && request.resource.data.car.keys().hasOnly([
+            'id',
+            'displayName',
+            'modelYear',
+            'imageAssetPath',
+            'basePrice'
+          ])
+          && request.resource.data.car.id is string
+          && request.resource.data.car.displayName is string
+          && request.resource.data.car.modelYear is int
+          && request.resource.data.car.imageAssetPath is string
+          && request.resource.data.car.basePrice is number
+          && request.resource.data.car.basePrice >= 0;
+      }
+
+      function isValidCreate() {
+        return hasExpectedRequestKeys()
+          && request.resource.data.userId is string
+          && request.resource.data.userId == request.auth.uid
+          && request.resource.data.contactEmail is string
+          && request.resource.data.contactEmail.size() > 0
+          && request.resource.data.contactEmail.size() <= 320
+          && hasValidCarSnapshot()
+          && request.resource.data.services is list
+          && request.resource.data.services.size() <= 25
+          && request.resource.data.servicesSubtotal is number
+          && request.resource.data.servicesSubtotal >= 0
+          && request.auth.token.email is string
+          && request.resource.data.contactEmail == request.auth.token.email
+          && request.resource.data.estimatedTotal is number
+          && request.resource.data.estimatedTotal
+            == request.resource.data.car.basePrice
+              + request.resource.data.servicesSubtotal
+          && request.resource.data.status == 'submitted'
+          && request.resource.data.createdAt is timestamp
+          && request.resource.data.updatedAt is timestamp
+          && request.resource.data.createdAt == request.time
+          && request.resource.data.updatedAt == request.time;
+      }
+
+      function isExactOwnerCancellation() {
+        return resource.data.userId == request.auth.uid
+          && resource.data.status == 'submitted'
+          && request.resource.data.status == 'cancelled'
+          && request.resource.data.updatedAt is timestamp
+          && request.resource.data.updatedAt == request.time
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            'status',
+            'updatedAt'
+          ]);
+      }
+
+      allow create: if isSignedIn() && isValidCreate();
+
+      allow read: if isSignedIn()
+        && resource.data.userId == request.auth.uid;
+
+      allow update: if isSignedIn() && isExactOwnerCancellation();
+
+      allow delete: if false;
+    }
+  }
+}

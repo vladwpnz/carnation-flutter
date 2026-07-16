@@ -1,14 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:carnation/core/navigation/carnation_route.dart';
 import 'package:carnation/core/theme/carnation_theme.dart';
+import 'package:carnation/features/requests/data/vehicle_request_repository.dart';
+import 'package:carnation/features/requests/presentation/pages/my_requests_page.dart';
 import 'package:carnation/features/user_auth/data/profile_repository.dart';
 import 'package:carnation/features/user_auth/firebase_auth_implementation/firebase_auth_service.dart';
 
 class ProfilePage extends StatefulWidget {
   final FirebaseAuthService? authService;
   final ProfileRepository? profileRepository;
+  final VehicleRequestRepository? requestRepository;
 
-  const ProfilePage({super.key, this.authService, this.profileRepository});
+  const ProfilePage({
+    super.key,
+    this.authService,
+    this.profileRepository,
+    this.requestRepository,
+  });
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -17,6 +26,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   late final FirebaseAuthService _auth;
   late final ProfileRepository _profileRepository;
+  late final VehicleRequestRepository _requestRepository;
   late final Future<_ProfileViewData> _profileFuture;
 
   @override
@@ -24,6 +34,8 @@ class _ProfilePageState extends State<ProfilePage> {
     super.initState();
     _auth = widget.authService ?? const FirebaseAuthService();
     _profileRepository = widget.profileRepository ?? const ProfileRepository();
+    _requestRepository =
+        widget.requestRepository ?? const FirestoreVehicleRequestRepository();
     _profileFuture = _loadProfile();
   }
 
@@ -65,6 +77,13 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                           const SizedBox(height: 12),
                           _buildAccountSection(data, isLoading),
+                          const SizedBox(height: 14),
+                          OutlinedButton.icon(
+                            key: const Key('profile-my-requests'),
+                            onPressed: _openMyRequests,
+                            icon: const Icon(Icons.receipt_long_outlined),
+                            label: const Text('My requests'),
+                          ),
                           if (data?.showSyncWarning == true) ...[
                             const SizedBox(height: 14),
                             _buildSyncWarning(data!.warningCode),
@@ -269,6 +288,16 @@ class _ProfilePageState extends State<ProfilePage> {
         showSyncWarning: true,
       );
     }
+  }
+
+  void _openMyRequests() {
+    Navigator.of(context).push(
+      carNationRoute<void>(
+        builder: (_) => MyRequestsPage(
+          requestRepository: _requestRepository,
+        ),
+      ),
+    );
   }
 
   Future<void> _signOut() async {
