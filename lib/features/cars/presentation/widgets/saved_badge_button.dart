@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:motor_show/core/theme/carnation_theme.dart';
-import 'package:motor_show/features/saved/application/saved_cars_controller.dart';
+import 'package:carnation/core/theme/carnation_theme.dart';
+import 'package:carnation/features/saved/application/saved_cars_controller.dart';
 
 class SavedBadgeButton extends StatelessWidget {
   final SavedCarsController controller;

@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:motor_show/features/user_auth/domain/user_profile.dart';
+import 'package:carnation/features/user_auth/domain/user_profile.dart';
 
 class ProfileRepository {
   final FirebaseFirestore? _firestore;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:motor_show/core/theme/carnation_theme.dart';
-import 'package:motor_show/features/cars/domain/car.dart';
+import 'package:carnation/core/theme/carnation_theme.dart';
+import 'package:carnation/features/cars/domain/car.dart';
 
 class CarCatalogCard extends StatelessWidget {
   final Car car;

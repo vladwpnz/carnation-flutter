@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:motor_show/core/theme/carnation_theme.dart';
-import 'package:motor_show/features/user_auth/domain/auth_validators.dart';
-import 'package:motor_show/features/user_auth/firebase_auth_implementation/firebase_auth_service.dart';
-import 'package:motor_show/features/user_auth/presentation/pages/sign_up_page.dart';
-import 'package:motor_show/features/user_auth/presentation/widgets/auth_brand_header.dart';
-import 'package:motor_show/features/user_auth/presentation/widgets/auth_page_shell.dart';
-import 'package:motor_show/features/user_auth/presentation/widgets/auth_primary_button.dart';
-import 'package:motor_show/features/user_auth/presentation/widgets/form_container_widget.dart';
+import 'package:carnation/core/theme/carnation_theme.dart';
+import 'package:carnation/features/user_auth/domain/auth_validators.dart';
+import 'package:carnation/features/user_auth/firebase_auth_implementation/firebase_auth_service.dart';
+import 'package:carnation/features/user_auth/presentation/pages/sign_up_page.dart';
+import 'package:carnation/features/user_auth/presentation/widgets/auth_brand_header.dart';
+import 'package:carnation/features/user_auth/presentation/widgets/auth_page_shell.dart';
+import 'package:carnation/features/user_auth/presentation/widgets/auth_primary_button.dart';
+import 'package:carnation/features/user_auth/presentation/widgets/form_container_widget.dart';
 
 class LoginPage extends StatefulWidget {
   final FirebaseAuthService? authService;

@@ -1,11 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:motor_show/features/user_auth/domain/auth_validators.dart';
-import 'package:motor_show/features/user_auth/domain/user_profile.dart';
-import 'package:motor_show/features/user_auth/firebase_auth_implementation/firebase_auth_service.dart';
-import 'package:motor_show/features/user_auth/presentation/pages/login_page.dart';
-import 'package:motor_show/main.dart';
+import 'package:carnation/features/user_auth/domain/auth_validators.dart';
+import 'package:carnation/features/user_auth/domain/user_profile.dart';
+import 'package:carnation/features/user_auth/firebase_auth_implementation/firebase_auth_service.dart';
+import 'package:carnation/features/user_auth/presentation/pages/login_page.dart';
+import 'package:carnation/main.dart';
 
 void main() {
   group('AuthValidators', () {

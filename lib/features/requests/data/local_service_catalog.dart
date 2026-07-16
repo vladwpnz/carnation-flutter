@@ -1,4 +1,4 @@
-import 'package:motor_show/features/requests/domain/additional_service.dart';
+import 'package:carnation/features/requests/domain/additional_service.dart';
 
 const localAdditionalServices = <AdditionalService>[
   AdditionalService(
@@ -16,7 +16,8 @@ const localAdditionalServices = <AdditionalService>[
   AdditionalService(
     id: 'extended-warranty',
     title: 'Extended warranty',
-    description: 'Additional warranty coverage discussed with a representative.',
+    description:
+        'Additional warranty coverage discussed with a representative.',
     price: 1500,
   ),
   AdditionalService(
@@ -40,13 +41,15 @@ const localAdditionalServices = <AdditionalService>[
   AdditionalService(
     id: 'trade-in-consultation',
     title: 'Trade-in consultation',
-    description: 'Discuss a potential trade-in with a CarNation representative.',
+    description:
+        'Discuss a potential trade-in with a CarNation representative.',
     price: 0,
   ),
   AdditionalService(
     id: 'test-drive',
     title: 'Book a test drive',
-    description: 'Request a convenient time to experience the selected vehicle.',
+    description:
+        'Request a convenient time to experience the selected vehicle.',
     price: 0,
   ),
 ];

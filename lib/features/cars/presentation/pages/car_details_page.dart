@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:motor_show/core/navigation/carnation_route.dart';
-import 'package:motor_show/core/theme/carnation_theme.dart';
-import 'package:motor_show/features/cars/domain/car.dart';
-import 'package:motor_show/features/compare/application/comparison_controller.dart';
-import 'package:motor_show/features/requests/presentation/pages/request_builder_page.dart';
-import 'package:motor_show/features/saved/application/saved_cars_controller.dart';
+import 'package:carnation/core/navigation/carnation_route.dart';
+import 'package:carnation/core/theme/carnation_theme.dart';
+import 'package:carnation/features/cars/domain/car.dart';
+import 'package:carnation/features/compare/application/comparison_controller.dart';
+import 'package:carnation/features/requests/presentation/pages/request_builder_page.dart';
+import 'package:carnation/features/saved/application/saved_cars_controller.dart';
 
 class CarDetailsPage extends StatelessWidget {
   final Car car;
@@ -239,8 +239,7 @@ class CarDetailsPage extends StatelessWidget {
   void _toggleComparison(BuildContext context) {
     final result = comparisonController.toggle(car);
     final message = switch (result) {
-      ComparisonToggleResult.added =>
-        '${car.fullName} added to comparison.',
+      ComparisonToggleResult.added => '${car.fullName} added to comparison.',
       ComparisonToggleResult.removed =>
         '${car.fullName} removed from comparison.',
       ComparisonToggleResult.limitReached =>

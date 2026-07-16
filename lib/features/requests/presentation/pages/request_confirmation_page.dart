@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:motor_show/core/theme/carnation_theme.dart';
-import 'package:motor_show/features/cars/domain/car.dart';
-import 'package:motor_show/features/requests/domain/additional_service.dart';
+import 'package:carnation/core/theme/carnation_theme.dart';
+import 'package:carnation/features/cars/domain/car.dart';
+import 'package:carnation/features/requests/domain/additional_service.dart';
 
 class RequestConfirmationPage extends StatelessWidget {
   final Car car;
@@ -160,7 +160,8 @@ class _RequestSummary extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          _SummaryRow(label: 'Vehicle price', value: Car.formatPrice(car.price)),
+          _SummaryRow(
+              label: 'Vehicle price', value: Car.formatPrice(car.price)),
           const Divider(height: 24),
           if (selectedServices.isEmpty)
             const Text(
@@ -173,9 +174,8 @@ class _RequestSummary extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 10),
                 child: _SummaryRow(
                   label: service.title,
-                  value: service.isFree
-                      ? 'Free'
-                      : Car.formatPrice(service.price),
+                  value:
+                      service.isFree ? 'Free' : Car.formatPrice(service.price),
                 ),
               ),
           const Divider(height: 24),

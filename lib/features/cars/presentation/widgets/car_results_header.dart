@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:motor_show/core/theme/carnation_theme.dart';
-import 'package:motor_show/features/cars/domain/car_catalog_query.dart';
+import 'package:carnation/core/theme/carnation_theme.dart';
+import 'package:carnation/features/cars/domain/car_catalog_query.dart';
 
 class CarResultsHeader extends StatelessWidget {
   final int resultCount;

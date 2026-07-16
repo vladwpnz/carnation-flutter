@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:motor_show/core/navigation/carnation_route.dart';
-import 'package:motor_show/core/theme/carnation_theme.dart';
-import 'package:motor_show/features/cars/data/local_car_catalog.dart';
-import 'package:motor_show/features/cars/domain/car.dart';
-import 'package:motor_show/features/cars/domain/car_catalog_query.dart';
-import 'package:motor_show/features/cars/presentation/pages/car_details_page.dart';
-import 'package:motor_show/features/cars/presentation/widgets/car_brand_filters.dart';
-import 'package:motor_show/features/cars/presentation/widgets/car_catalog_card.dart';
-import 'package:motor_show/features/cars/presentation/widgets/car_catalog_empty_state.dart';
-import 'package:motor_show/features/cars/presentation/widgets/car_filter_actions.dart';
-import 'package:motor_show/features/cars/presentation/widgets/car_filters_sheet.dart';
-import 'package:motor_show/features/cars/presentation/widgets/car_home_header.dart';
-import 'package:motor_show/features/cars/presentation/widgets/car_results_header.dart';
-import 'package:motor_show/features/cars/presentation/widgets/car_search_field.dart';
-import 'package:motor_show/features/compare/application/comparison_controller.dart';
-import 'package:motor_show/features/compare/presentation/pages/compare_page.dart';
-import 'package:motor_show/features/saved/application/saved_cars_controller.dart';
-import 'package:motor_show/features/saved/presentation/pages/saved_cars_page.dart';
-import 'package:motor_show/features/user_auth/firebase_auth_implementation/firebase_auth_service.dart';
-import 'package:motor_show/features/user_auth/presentation/pages/profile_page.dart';
+import 'package:carnation/core/navigation/carnation_route.dart';
+import 'package:carnation/core/theme/carnation_theme.dart';
+import 'package:carnation/features/cars/data/local_car_catalog.dart';
+import 'package:carnation/features/cars/domain/car.dart';
+import 'package:carnation/features/cars/domain/car_catalog_query.dart';
+import 'package:carnation/features/cars/presentation/pages/car_details_page.dart';
+import 'package:carnation/features/cars/presentation/widgets/car_brand_filters.dart';
+import 'package:carnation/features/cars/presentation/widgets/car_catalog_card.dart';
+import 'package:carnation/features/cars/presentation/widgets/car_catalog_empty_state.dart';
+import 'package:carnation/features/cars/presentation/widgets/car_filter_actions.dart';
+import 'package:carnation/features/cars/presentation/widgets/car_filters_sheet.dart';
+import 'package:carnation/features/cars/presentation/widgets/car_home_header.dart';
+import 'package:carnation/features/cars/presentation/widgets/car_results_header.dart';
+import 'package:carnation/features/cars/presentation/widgets/car_search_field.dart';
+import 'package:carnation/features/compare/application/comparison_controller.dart';
+import 'package:carnation/features/compare/presentation/pages/compare_page.dart';
+import 'package:carnation/features/saved/application/saved_cars_controller.dart';
+import 'package:carnation/features/saved/presentation/pages/saved_cars_page.dart';
+import 'package:carnation/features/user_auth/firebase_auth_implementation/firebase_auth_service.dart';
+import 'package:carnation/features/user_auth/presentation/pages/profile_page.dart';
 
 class HomePage extends StatefulWidget {
   final FirebaseAuthService _authService;
@@ -99,8 +99,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _savedCarsController =
-        widget.savedCarsController ?? SavedCarsController();
+    _savedCarsController = widget.savedCarsController ?? SavedCarsController();
     _comparisonController =
         widget.comparisonController ?? ComparisonController();
     _ownsSavedCarsController = widget.savedCarsController == null;
@@ -196,8 +195,7 @@ class _HomePageState extends State<HomePage> {
                                     onToggleSaved: () => _toggleSaved(car),
                                     onToggleComparison: () =>
                                         _toggleComparison(car),
-                                    onViewDetails: () =>
-                                        _openCarDetails(car),
+                                    onViewDetails: () => _openCarDetails(car),
                                   ),
                                   const SizedBox(height: 14),
                                 ],
@@ -343,8 +341,7 @@ class _HomePageState extends State<HomePage> {
   void _toggleComparison(Car car) {
     final result = _comparisonController.toggle(car);
     final message = switch (result) {
-      ComparisonToggleResult.added =>
-        '${car.fullName} added to comparison.',
+      ComparisonToggleResult.added => '${car.fullName} added to comparison.',
       ComparisonToggleResult.removed =>
         '${car.fullName} removed from comparison.',
       ComparisonToggleResult.limitReached =>
