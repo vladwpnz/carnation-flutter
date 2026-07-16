@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:motor_show/features/cars/data/local_car_catalog.dart';
-import 'package:motor_show/features/requests/application/request_builder_controller.dart';
-import 'package:motor_show/features/requests/data/local_service_catalog.dart';
+import 'package:carnation/features/cars/data/local_car_catalog.dart';
+import 'package:carnation/features/requests/application/request_builder_controller.dart';
+import 'package:carnation/features/requests/data/local_service_catalog.dart';
 
 void main() {
   group('RequestBuilderController', () {

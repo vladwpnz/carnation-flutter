@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:motor_show/core/navigation/carnation_route.dart';
-import 'package:motor_show/core/theme/carnation_theme.dart';
-import 'package:motor_show/features/cars/domain/car.dart';
-import 'package:motor_show/features/cars/presentation/pages/car_details_page.dart';
-import 'package:motor_show/features/cars/presentation/widgets/car_catalog_card.dart';
-import 'package:motor_show/features/compare/application/comparison_controller.dart';
-import 'package:motor_show/features/saved/application/saved_cars_controller.dart';
+import 'package:carnation/core/navigation/carnation_route.dart';
+import 'package:carnation/core/theme/carnation_theme.dart';
+import 'package:carnation/features/cars/domain/car.dart';
+import 'package:carnation/features/cars/presentation/pages/car_details_page.dart';
+import 'package:carnation/features/cars/presentation/widgets/car_catalog_card.dart';
+import 'package:carnation/features/compare/application/comparison_controller.dart';
+import 'package:carnation/features/saved/application/saved_cars_controller.dart';
 
 class SavedCarsPage extends StatelessWidget {
   final SavedCarsController savedCarsController;

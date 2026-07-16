@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:motor_show/core/navigation/carnation_route.dart';
-import 'package:motor_show/core/theme/carnation_theme.dart';
-import 'package:motor_show/features/cars/domain/car.dart';
-import 'package:motor_show/features/requests/application/request_builder_controller.dart';
-import 'package:motor_show/features/requests/data/local_service_catalog.dart';
-import 'package:motor_show/features/requests/domain/additional_service.dart';
-import 'package:motor_show/features/requests/presentation/pages/request_confirmation_page.dart';
+import 'package:carnation/core/navigation/carnation_route.dart';
+import 'package:carnation/core/theme/carnation_theme.dart';
+import 'package:carnation/features/cars/domain/car.dart';
+import 'package:carnation/features/requests/application/request_builder_controller.dart';
+import 'package:carnation/features/requests/data/local_service_catalog.dart';
+import 'package:carnation/features/requests/domain/additional_service.dart';
+import 'package:carnation/features/requests/presentation/pages/request_confirmation_page.dart';
 
 class RequestBuilderPage extends StatefulWidget {
   final Car car;
@@ -244,18 +244,15 @@ class _ServiceOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final priceLabel = service.isFree
-        ? 'Free'
-        : Car.formatPrice(service.price);
+    final priceLabel = service.isFree ? 'Free' : Car.formatPrice(service.price);
 
     return Semantics(
       button: true,
       selected: selected,
       label: '${service.title}, $priceLabel',
       child: Material(
-        color: selected
-            ? CarNationColors.surfaceRaised
-            : CarNationColors.surface,
+        color:
+            selected ? CarNationColors.surfaceRaised : CarNationColors.surface,
         borderRadius: BorderRadius.circular(CarNationRadii.card),
         child: InkWell(
           key: Key('service-${service.id}'),
@@ -266,9 +263,8 @@ class _ServiceOption extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(CarNationRadii.card),
               border: Border.all(
-                color: selected
-                    ? CarNationColors.accent
-                    : CarNationColors.border,
+                color:
+                    selected ? CarNationColors.accent : CarNationColors.border,
               ),
             ),
             child: Row(

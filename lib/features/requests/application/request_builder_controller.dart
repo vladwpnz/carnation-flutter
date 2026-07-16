@@ -1,7 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter/foundation.dart';
-import 'package:motor_show/features/requests/domain/additional_service.dart';
+import 'package:carnation/features/requests/domain/additional_service.dart';
 
 class RequestBuilderController extends ChangeNotifier {
   final int basePrice;
@@ -15,7 +15,8 @@ class RequestBuilderController extends ChangeNotifier {
   }
 
   int get servicesSubtotal {
-    return _selectedById.values.fold(0, (total, service) => total + service.price);
+    return _selectedById.values
+        .fold(0, (total, service) => total + service.price);
   }
 
   int get estimatedTotal => basePrice + servicesSubtotal;

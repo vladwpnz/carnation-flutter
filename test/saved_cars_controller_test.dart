@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:motor_show/features/cars/data/local_car_catalog.dart';
-import 'package:motor_show/features/saved/application/saved_cars_controller.dart';
+import 'package:carnation/features/cars/data/local_car_catalog.dart';
+import 'package:carnation/features/saved/application/saved_cars_controller.dart';
 
 void main() {
   group('SavedCarsController', () {

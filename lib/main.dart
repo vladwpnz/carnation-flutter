@@ -2,11 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:motor_show/core/theme/carnation_theme.dart';
-import 'package:motor_show/features/app/splash_screen/splash_screen.dart';
-import 'package:motor_show/features/user_auth/firebase_auth_implementation/firebase_auth_service.dart';
-import 'package:motor_show/features/user_auth/presentation/pages/home_page.dart';
-import 'package:motor_show/features/user_auth/presentation/pages/login_page.dart';
+import 'package:carnation/core/theme/carnation_theme.dart';
+import 'package:carnation/features/app/splash_screen/splash_screen.dart';
+import 'package:carnation/features/user_auth/firebase_auth_implementation/firebase_auth_service.dart';
+import 'package:carnation/features/user_auth/presentation/pages/home_page.dart';
+import 'package:carnation/features/user_auth/presentation/pages/login_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

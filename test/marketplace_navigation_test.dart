@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:motor_show/core/theme/carnation_theme.dart';
-import 'package:motor_show/features/cars/presentation/pages/car_details_page.dart';
-import 'package:motor_show/features/compare/application/comparison_controller.dart';
-import 'package:motor_show/features/compare/presentation/pages/compare_page.dart';
-import 'package:motor_show/features/requests/presentation/pages/request_builder_page.dart';
-import 'package:motor_show/features/saved/application/saved_cars_controller.dart';
-import 'package:motor_show/features/saved/presentation/pages/saved_cars_page.dart';
-import 'package:motor_show/features/user_auth/presentation/pages/home_page.dart';
+import 'package:carnation/core/theme/carnation_theme.dart';
+import 'package:carnation/features/cars/presentation/pages/car_details_page.dart';
+import 'package:carnation/features/compare/application/comparison_controller.dart';
+import 'package:carnation/features/compare/presentation/pages/compare_page.dart';
+import 'package:carnation/features/requests/presentation/pages/request_builder_page.dart';
+import 'package:carnation/features/saved/application/saved_cars_controller.dart';
+import 'package:carnation/features/saved/presentation/pages/saved_cars_page.dart';
+import 'package:carnation/features/user_auth/presentation/pages/home_page.dart';
 
 void main() {
   testWidgets('Home View details opens Vehicle Details', (tester) async {

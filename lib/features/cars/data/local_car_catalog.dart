@@ -1,4 +1,4 @@
-import 'package:motor_show/features/cars/domain/car.dart';
+import 'package:carnation/features/cars/domain/car.dart';
 
 const localCarCatalog = <Car>[
   Car(

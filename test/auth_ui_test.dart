@@ -3,11 +3,11 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:motor_show/core/theme/carnation_theme.dart';
-import 'package:motor_show/features/app/splash_screen/splash_screen.dart';
-import 'package:motor_show/features/user_auth/firebase_auth_implementation/firebase_auth_service.dart';
-import 'package:motor_show/features/user_auth/presentation/pages/login_page.dart';
-import 'package:motor_show/features/user_auth/presentation/pages/sign_up_page.dart';
+import 'package:carnation/core/theme/carnation_theme.dart';
+import 'package:carnation/features/app/splash_screen/splash_screen.dart';
+import 'package:carnation/features/user_auth/firebase_auth_implementation/firebase_auth_service.dart';
+import 'package:carnation/features/user_auth/presentation/pages/login_page.dart';
+import 'package:carnation/features/user_auth/presentation/pages/sign_up_page.dart';
 
 void main() {
   testWidgets('Splash shows CarNation branding and loading state', (
@@ -16,7 +16,8 @@ void main() {
     await tester.pumpWidget(_testApp(const SplashScreen()));
 
     expect(find.text('CarNation'), findsOneWidget);
-    expect(find.text('Find the car that fits your next journey.'), findsOneWidget);
+    expect(
+        find.text('Find the car that fits your next journey.'), findsOneWidget);
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
   });
 

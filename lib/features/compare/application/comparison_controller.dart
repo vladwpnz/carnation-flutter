@@ -1,7 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter/foundation.dart';
-import 'package:motor_show/features/cars/domain/car.dart';
+import 'package:carnation/features/cars/domain/car.dart';
 
 enum ComparisonAddResult {
   added,

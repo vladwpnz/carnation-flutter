@@ -1,9 +1,9 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:motor_show/core/theme/carnation_theme.dart';
-import 'package:motor_show/features/cars/domain/car.dart';
-import 'package:motor_show/features/compare/application/comparison_controller.dart';
+import 'package:carnation/core/theme/carnation_theme.dart';
+import 'package:carnation/features/cars/domain/car.dart';
+import 'package:carnation/features/compare/application/comparison_controller.dart';
 
 class ComparePage extends StatelessWidget {
   final ComparisonController comparisonController;
@@ -26,7 +26,8 @@ class ComparePage extends StatelessWidget {
             builder: (context, _) {
               final cars = comparisonController.cars;
               if (cars.isEmpty) {
-                return _EmptyComparison(onBack: () => Navigator.maybePop(context));
+                return _EmptyComparison(
+                    onBack: () => Navigator.maybePop(context));
               }
 
               return LayoutBuilder(
@@ -55,13 +56,15 @@ class ComparePage extends StatelessWidget {
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              for (var index = 0; index < cars.length; index++) ...[
+                              for (var index = 0;
+                                  index < cars.length;
+                                  index++) ...[
                                 SizedBox(
                                   width: cardWidth,
                                   child: _ComparisonVehicleCard(
                                     car: cars[index],
-                                    onRemove: () =>
-                                        comparisonController.remove(cars[index].id),
+                                    onRemove: () => comparisonController
+                                        .remove(cars[index].id),
                                   ),
                                 ),
                                 if (index < cars.length - 1)
