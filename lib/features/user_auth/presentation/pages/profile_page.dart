@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:motor_show/core/theme/carnation_theme.dart';
 import 'package:motor_show/features/user_auth/data/profile_repository.dart';
 import 'package:motor_show/features/user_auth/firebase_auth_implementation/firebase_auth_service.dart';
 
@@ -28,72 +29,198 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Profile"),
-      ),
-      body: Center(
-        child: FutureBuilder<_ProfileViewData>(
-          future: _profileFuture,
-          builder: (context, snapshot) {
-            final data = snapshot.data;
-            final isLoading =
-                snapshot.connectionState == ConnectionState.waiting;
+    return Theme(
+      data: CarNationTheme.dark,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Profile'),
+        ),
+        body: SafeArea(
+          top: false,
+          child: FutureBuilder<_ProfileViewData>(
+            future: _profileFuture,
+            builder: (context, snapshot) {
+              final data = snapshot.data;
+              final isLoading =
+                  snapshot.connectionState == ConnectionState.waiting;
 
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const CircleAvatar(
-                  radius: 50,
-                  backgroundImage: AssetImage('assets/profile_picture.jpg'),
-                ),
-                const SizedBox(height: 20),
-                if (isLoading) ...[
-                  const CircularProgressIndicator(),
-                  const SizedBox(height: 20),
-                ] else ...[
-                  Text(
-                    data?.username ?? 'User',
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    data?.email ?? 'No email available',
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  if (data?.errorMessage != null) ...[
-                    const SizedBox(height: 12),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      child: Text(
-                        data!.errorMessage!,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(color: Colors.red),
+              return ListView(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
+                children: [
+                  Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 640),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          _buildProfileHeader(data, isLoading),
+                          const SizedBox(height: 24),
+                          const Text(
+                            'Account',
+                            style: TextStyle(
+                              color: CarNationColors.textPrimary,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          _buildAccountSection(data, isLoading),
+                          if (data?.showSyncWarning == true) ...[
+                            const SizedBox(height: 14),
+                            _buildSyncWarning(data!.warningCode),
+                          ],
+                          const SizedBox(height: 24),
+                          FilledButton.icon(
+                            onPressed: _backToHome,
+                            icon: const Icon(Icons.home_rounded),
+                            label: const Text('Back to Home'),
+                          ),
+                          const SizedBox(height: 12),
+                          OutlinedButton.icon(
+                            onPressed: _signOut,
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: CarNationColors.danger,
+                              side: const BorderSide(
+                                color: CarNationColors.danger,
+                              ),
+                            ),
+                            icon: const Icon(Icons.logout_rounded),
+                            label: const Text('Sign out'),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                  const SizedBox(height: 20),
+                  ),
                 ],
-                ElevatedButton(
-                  onPressed: _signOut,
-                  child: const Text("Sign out"),
-                ),
-                const SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    if (Navigator.of(context).canPop()) {
-                      Navigator.of(context).pop();
-                    }
-                  },
-                  child: const Text("Back to Home"),
-                ),
-              ],
-            );
-          },
+              );
+            },
+          ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildProfileHeader(_ProfileViewData? data, bool isLoading) {
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(4),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: CarNationColors.accent,
+              width: 2,
+            ),
+          ),
+          child: const CircleAvatar(
+            radius: 52,
+            backgroundImage: AssetImage('assets/profile_picture.jpg'),
+          ),
+        ),
+        const SizedBox(height: 18),
+        Text(
+          isLoading ? 'Loading profile' : data?.username ?? 'User',
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            color: CarNationColors.textPrimary,
+            fontSize: 27,
+            fontWeight: FontWeight.w900,
+          ),
+        ),
+        const SizedBox(height: 7),
+        Text(
+          isLoading ? 'Please wait' : data?.email ?? 'No email available',
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            color: CarNationColors.textSecondary,
+            fontSize: 15,
+          ),
+        ),
+        if (isLoading) ...[
+          const SizedBox(height: 16),
+          const SizedBox(
+            width: 26,
+            height: 26,
+            child: CircularProgressIndicator(strokeWidth: 2.5),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildAccountSection(_ProfileViewData? data, bool isLoading) {
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: CarNationColors.surface,
+        borderRadius: BorderRadius.circular(CarNationRadii.page),
+        border: Border.all(color: CarNationColors.border),
+      ),
+      child: Column(
+        children: [
+          _AccountRow(
+            icon: Icons.person_outline_rounded,
+            label: 'Username',
+            value: isLoading ? 'Loading...' : data?.username ?? 'User',
+          ),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 14),
+            child: Divider(height: 1),
+          ),
+          _AccountRow(
+            icon: Icons.email_outlined,
+            label: 'Email',
+            value:
+                isLoading ? 'Loading...' : data?.email ?? 'No email available',
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSyncWarning(String? warningCode) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: CarNationColors.warningSurface,
+        borderRadius: BorderRadius.circular(CarNationRadii.card),
+        border: Border.all(color: const Color(0xFF66521D)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(
+            Icons.sync_problem_rounded,
+            color: CarNationColors.warning,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Profile sync is currently unavailable. Account details are shown instead.',
+                  style: TextStyle(
+                    color: CarNationColors.textPrimary,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    height: 1.4,
+                  ),
+                ),
+                if (warningCode != null) ...[
+                  const SizedBox(height: 7),
+                  Text(
+                    'Technical code: $warningCode',
+                    style: const TextStyle(
+                      color: CarNationColors.textMuted,
+                      fontSize: 11,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -105,7 +232,8 @@ class _ProfilePageState extends State<ProfilePage> {
       return const _ProfileViewData(
         username: 'User',
         email: 'No email available',
-        errorMessage: 'No signed-in user is available.',
+        showSyncWarning: true,
+        warningCode: 'no-current-user',
       );
     }
 
@@ -131,14 +259,14 @@ class _ProfilePageState extends State<ProfilePage> {
       return _ProfileViewData(
         username: _firstNonEmpty([fallbackUsername, 'User']),
         email: _firstNonEmpty([fallbackEmail, 'No email available']),
-        errorMessage:
-            'Could not load profile data. Using account fallback. Error code: ${error.code}.',
+        showSyncWarning: true,
+        warningCode: _sanitizeErrorCode(error.code),
       );
     } catch (_) {
       return _ProfileViewData(
         username: _firstNonEmpty([fallbackUsername, 'User']),
         email: _firstNonEmpty([fallbackEmail, 'No email available']),
-        errorMessage: 'Could not load profile data. Using account fallback.',
+        showSyncWarning: true,
       );
     }
   }
@@ -160,6 +288,12 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  void _backToHome() {
+    if (Navigator.of(context).canPop()) {
+      Navigator.of(context).pop();
+    }
+  }
+
   String _trimOrEmpty(String? value) => value?.trim() ?? '';
 
   String _firstNonEmpty(List<String?> values) {
@@ -172,16 +306,71 @@ class _ProfilePageState extends State<ProfilePage> {
 
     return 'User';
   }
+
+  String? _sanitizeErrorCode(String code) {
+    final sanitized = code.replaceAll(RegExp(r'[^a-zA-Z0-9_-]'), '');
+    return sanitized.isEmpty ? null : sanitized;
+  }
+}
+
+class _AccountRow extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+
+  const _AccountRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, color: CarNationColors.accentSoft, size: 24),
+        const SizedBox(width: 14),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: const TextStyle(
+                  color: CarNationColors.textMuted,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 5),
+              Text(
+                value,
+                style: const TextStyle(
+                  color: CarNationColors.textPrimary,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                  height: 1.35,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
 }
 
 class _ProfileViewData {
   final String username;
   final String email;
-  final String? errorMessage;
+  final bool showSyncWarning;
+  final String? warningCode;
 
   const _ProfileViewData({
     required this.username,
     required this.email,
-    this.errorMessage,
+    this.showSyncWarning = false,
+    this.warningCode,
   });
 }

@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:motor_show/core/theme/carnation_theme.dart';
 import 'package:motor_show/features/user_auth/domain/auth_validators.dart';
 import 'package:motor_show/features/user_auth/firebase_auth_implementation/firebase_auth_service.dart';
 import 'package:motor_show/features/user_auth/presentation/pages/sign_up_page.dart';
+import 'package:motor_show/features/user_auth/presentation/widgets/auth_brand_header.dart';
+import 'package:motor_show/features/user_auth/presentation/widgets/auth_page_shell.dart';
+import 'package:motor_show/features/user_auth/presentation/widgets/auth_primary_button.dart';
 import 'package:motor_show/features/user_auth/presentation/widgets/form_container_widget.dart';
 
 class LoginPage extends StatefulWidget {
@@ -36,129 +40,80 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Login"),
-      ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.blue, Colors.white70],
-          ),
-        ),
-        child: Center(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      'assets/company_logo.png',
-                      width: 200,
-                      height: 100,
-                    ),
-                    const SizedBox(height: 20),
-                    const Text(
-                      "Login",
-                      style: TextStyle(
-                        fontSize: 27,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 30),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.8),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: FormContainerWidget(
-                        controller: _emailController,
-                        hintText: "Email",
-                        isPasswordField: false,
-                        inputType: TextInputType.emailAddress,
-                        textInputAction: TextInputAction.next,
-                        validator: AuthValidators.email,
-                        enabled: !_isSigning,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.8),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: FormContainerWidget(
-                        controller: _passwordController,
-                        hintText: "Password",
-                        isPasswordField: true,
-                        textInputAction: TextInputAction.done,
-                        validator: AuthValidators.password,
-                        enabled: !_isSigning,
-                        onFieldSubmitted: (_) => _signIn(),
-                      ),
-                    ),
-                    const SizedBox(height: 30),
-                    GestureDetector(
-                      onTap: _isSigning ? null : _signIn,
-                      child: Container(
-                        width: double.infinity,
-                        height: 45,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Center(
-                          child: _isSigning
-                              ? const CircularProgressIndicator(
-                                  color: Colors.blue,
-                                )
-                              : const Text(
-                                  "Login",
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text("Don't have an account?"),
-                        const SizedBox(width: 5),
-                        GestureDetector(
-                          onTap: _isSigning
-                              ? null
-                              : () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const SignUpPage(),
-                                    ),
-                                  );
-                                },
-                          child: const Text(
-                            "Sign Up",
-                            style: TextStyle(
-                              color: Colors.blue,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+    return AuthPageShell(
+      child: AutofillGroup(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const AuthBrandHeader(
+              title: 'Welcome back',
+              supportingText: 'Sign in to your account',
+            ),
+            const SizedBox(height: 24),
+            Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  FormContainerWidget(
+                    controller: _emailController,
+                    labelText: 'Email',
+                    hintText: 'you@example.com',
+                    prefixIcon: Icons.email_outlined,
+                    isPasswordField: false,
+                    inputType: TextInputType.emailAddress,
+                    textInputAction: TextInputAction.next,
+                    autofillHints: const [AutofillHints.email],
+                    validator: AuthValidators.email,
+                    enabled: !_isSigning,
+                  ),
+                  const SizedBox(height: 16),
+                  FormContainerWidget(
+                    controller: _passwordController,
+                    labelText: 'Password',
+                    hintText: 'Enter your password',
+                    prefixIcon: Icons.lock_outline_rounded,
+                    isPasswordField: true,
+                    textInputAction: TextInputAction.done,
+                    autofillHints: const [AutofillHints.password],
+                    validator: AuthValidators.password,
+                    enabled: !_isSigning,
+                    onFieldSubmitted: (_) => _signIn(),
+                  ),
+                  const SizedBox(height: 24),
+                  AuthPrimaryButton(
+                    label: 'Login',
+                    loadingLabel: 'Signing in...',
+                    icon: Icons.login_rounded,
+                    isLoading: _isSigning,
+                    onPressed: _signIn,
+                  ),
+                ],
               ),
             ),
-          ),
+            const SizedBox(height: 14),
+            Wrap(
+              alignment: WrapAlignment.center,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 4,
+              children: [
+                const Text(
+                  "Don't have an account?",
+                  style: TextStyle(
+                    color: CarNationColors.textSecondary,
+                    fontSize: 14,
+                  ),
+                ),
+                TextButton(
+                  onPressed: _isSigning ? null : _openSignUp,
+                  child: const Text(
+                    'Sign Up',
+                    style: TextStyle(fontWeight: FontWeight.w800),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
@@ -194,6 +149,15 @@ class _LoginPageState extends State<LoginPage> {
         });
       }
     }
+  }
+
+  void _openSignUp() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const SignUpPage(),
+      ),
+    );
   }
 
   void _showError(String message) {
