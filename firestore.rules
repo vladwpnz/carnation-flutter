@@ -10,6 +10,30 @@ service cloud.firestore {
       return isSignedIn() && request.auth.uid == userId;
     }
 
+    function isAdmin() {
+      return isSignedIn()
+        && exists(
+          /databases/$(database)/documents/admins/$(request.auth.uid)
+        );
+    }
+
+    function isAllowedRequestStatus(status) {
+      return status in [
+        'submitted',
+        'underReview',
+        'customerContacted',
+        'offerPrepared',
+        'completed',
+        'cancelled'
+      ];
+    }
+
+    match /admins/{adminId} {
+      allow get: if isOwnUserDocument(adminId);
+      allow list: if false;
+      allow create, update, delete: if false;
+    }
+
     match /users/{userId} {
       allow read: if isOwnUserDocument(userId);
 
@@ -111,12 +135,23 @@ service cloud.firestore {
           ]);
       }
 
+      function isExactAdminStatusUpdate() {
+        return isAllowedRequestStatus(request.resource.data.status)
+          && request.resource.data.updatedAt is timestamp
+          && request.resource.data.updatedAt == request.time
+          && request.resource.data.diff(resource.data)
+            .affectedKeys()
+            .hasOnly(['status', 'updatedAt']);
+      }
+
       allow create: if isSignedIn() && isValidCreate();
 
-      allow read: if isSignedIn()
-        && resource.data.userId == request.auth.uid;
+      allow read: if (isSignedIn()
+        && resource.data.userId == request.auth.uid)
+        || isAdmin();
 
-      allow update: if isSignedIn() && isExactOwnerCancellation();
+      allow update: if (isSignedIn() && isExactOwnerCancellation())
+        || (isAdmin() && isExactAdminStatusUpdate());
 
       allow delete: if false;
     }
