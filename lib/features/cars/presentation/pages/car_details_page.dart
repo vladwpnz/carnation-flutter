@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:carnation/core/navigation/carnation_route.dart';
 import 'package:carnation/core/theme/carnation_theme.dart';
 import 'package:carnation/features/cars/domain/car.dart';
+import 'package:carnation/features/cars/presentation/widgets/car_image.dart';
 import 'package:carnation/features/compare/application/comparison_controller.dart';
 import 'package:carnation/features/requests/presentation/pages/request_builder_page.dart';
 import 'package:carnation/features/saved/application/saved_cars_controller.dart';
@@ -50,8 +51,9 @@ class CarDetailsPage extends StatelessWidget {
                                   ),
                                   child: AspectRatio(
                                     aspectRatio: 16 / 10,
-                                    child: Image.asset(
-                                      car.imagePath,
+                                    child: CarImage(
+                                      imagePath: car.imagePath,
+                                      brand: car.brand,
                                       width: double.infinity,
                                       fit: BoxFit.cover,
                                     ),

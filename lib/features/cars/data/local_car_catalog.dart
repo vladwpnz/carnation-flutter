@@ -1,56 +1,12 @@
+import 'package:carnation/features/cars/data/catalog/audi_cars.dart';
+import 'package:carnation/features/cars/data/catalog/bmw_cars.dart';
+import 'package:carnation/features/cars/data/catalog/ford_cars.dart';
+import 'package:carnation/features/cars/data/catalog/volkswagen_cars.dart';
 import 'package:carnation/features/cars/domain/car.dart';
 
 const localCarCatalog = <Car>[
-  Car(
-    id: 'bmw-m4-2014',
-    brand: 'BMW',
-    model: 'M4',
-    year: 2014,
-    price: 123000,
-    description: 'F82 • 3.0 DCT (431 к.с.) • Base',
-    imagePath: 'assets/car1.jpg',
-    bodyType: 'Coupe',
-    fuelType: 'Gasoline',
-    transmission: 'DCT',
-    horsepower: 431,
-  ),
-  Car(
-    id: 'volkswagen-golf-gti-2014',
-    brand: 'Volkswagen',
-    model: 'Golf GTI',
-    year: 2014,
-    price: 19000,
-    description: 'VII Gen • 2.0 (256 к.с.)',
-    imagePath: 'assets/car2.jpg',
-    bodyType: 'Hatchback',
-    fuelType: 'Gasoline',
-    transmission: 'Manual',
-    horsepower: 256,
-  ),
-  Car(
-    id: 'ford-focus-2015',
-    brand: 'Ford',
-    model: 'Focus',
-    year: 2015,
-    price: 8500,
-    description: 'III покоління (FL) • 2.0 TDCi Powershift (160 к.с.)',
-    imagePath: 'assets/car3.jpg',
-    bodyType: 'Hatchback',
-    fuelType: 'Diesel',
-    transmission: 'Powershift',
-    horsepower: 160,
-  ),
-  Car(
-    id: 'audi-a6-2011',
-    brand: 'Audi',
-    model: 'A6',
-    year: 2011,
-    price: 18900,
-    description: '3.0 TFSI S-tronic (300 к.с.)',
-    imagePath: 'assets/car4.jpg',
-    bodyType: 'Sedan',
-    fuelType: 'Gasoline',
-    transmission: 'S-tronic',
-    horsepower: 300,
-  ),
+  ...bmwCars,
+  ...volkswagenCars,
+  ...fordCars,
+  ...audiCars,
 ];

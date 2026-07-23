@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:carnation/core/theme/carnation_theme.dart';
 import 'package:carnation/features/cars/domain/car.dart';
+import 'package:carnation/features/cars/presentation/widgets/car_image.dart';
 
 class CarCatalogCard extends StatelessWidget {
   final Car car;
@@ -34,8 +35,9 @@ class CarCatalogCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(18),
                   child: AspectRatio(
                     aspectRatio: 16 / 10,
-                    child: Image.asset(
-                      car.imagePath,
+                    child: CarImage(
+                      imagePath: car.imagePath,
+                      brand: car.brand,
                       fit: BoxFit.cover,
                       width: double.infinity,
                     ),

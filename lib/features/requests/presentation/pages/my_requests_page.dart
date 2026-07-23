@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:carnation/core/navigation/carnation_route.dart';
 import 'package:carnation/core/theme/carnation_theme.dart';
 import 'package:carnation/features/cars/domain/car.dart';
+import 'package:carnation/features/cars/presentation/widgets/car_image.dart';
 import 'package:carnation/features/requests/data/vehicle_request_repository.dart';
 import 'package:carnation/features/requests/domain/vehicle_request.dart';
 import 'package:carnation/features/requests/presentation/pages/request_details_page.dart';
@@ -212,31 +213,9 @@ class _RequestVehicleImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (assetPath.isEmpty) {
-      return const _ImageFallback();
-    }
-
-    return Image.asset(
-      assetPath,
-      fit: BoxFit.cover,
-      errorBuilder: (_, __, ___) => const _ImageFallback(),
-    );
-  }
-}
-
-class _ImageFallback extends StatelessWidget {
-  const _ImageFallback();
-
-  @override
-  Widget build(BuildContext context) {
-    return const ColoredBox(
-      color: CarNationColors.surfaceRaised,
-      child: Center(
-        child: Icon(
-          Icons.directions_car_filled_rounded,
-          color: CarNationColors.textMuted,
-        ),
-      ),
+    return CarImage(
+      imagePath: assetPath,
+      brand: inferCarImageBrand(imagePath: assetPath),
     );
   }
 }

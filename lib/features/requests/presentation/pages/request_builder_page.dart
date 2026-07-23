@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:carnation/core/navigation/carnation_route.dart';
 import 'package:carnation/core/theme/carnation_theme.dart';
 import 'package:carnation/features/cars/domain/car.dart';
+import 'package:carnation/features/cars/presentation/widgets/car_image.dart';
 import 'package:carnation/features/requests/application/request_builder_controller.dart';
 import 'package:carnation/features/requests/data/local_service_catalog.dart';
 import 'package:carnation/features/requests/data/vehicle_request_repository.dart';
@@ -316,7 +317,7 @@ class _SelectedVehicle extends StatelessWidget {
                 width: 112,
                 child: AspectRatio(
                   aspectRatio: 4 / 3,
-                  child: Image.asset(car.imagePath, fit: BoxFit.cover),
+                  child: CarImage(imagePath: car.imagePath, brand: car.brand),
                 ),
               ),
             ),

@@ -65,6 +65,10 @@ flutter:
     - assets/car2.jpg
     - assets/car3.jpg
     - assets/car4.jpg
+    - assets/cars/bmw/
+    - assets/cars/volkswagen/
+    - assets/cars/ford/
+    - assets/cars/audi/
     - assets/company_logo.png
     - assets/profile_picture.jpg
 

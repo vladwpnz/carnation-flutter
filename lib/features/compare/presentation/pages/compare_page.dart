@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:carnation/core/theme/carnation_theme.dart';
 import 'package:carnation/features/cars/domain/car.dart';
+import 'package:carnation/features/cars/presentation/widgets/car_image.dart';
 import 'package:carnation/features/compare/application/comparison_controller.dart';
 
 class ComparePage extends StatelessWidget {
@@ -116,8 +117,9 @@ class _ComparisonVehicleCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(CarNationRadii.control),
               child: AspectRatio(
                 aspectRatio: 16 / 10,
-                child: Image.asset(
-                  car.imagePath,
+                child: CarImage(
+                  imagePath: car.imagePath,
+                  brand: car.brand,
                   fit: BoxFit.cover,
                   semanticLabel: '${car.fullName} vehicle photo',
                 ),

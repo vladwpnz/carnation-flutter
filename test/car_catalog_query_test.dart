@@ -14,7 +14,7 @@ void main() {
           'Audi A6 2011',
         ]),
       );
-      expect(localCarCatalog, hasLength(4));
+      expect(localCarCatalog, hasLength(40));
       expect(localCarCatalog.map((car) => car.price), everyElement(isA<int>()));
     });
   });
@@ -41,6 +41,8 @@ void main() {
 
       expect(results.map((car) => car.fullName), [
         'Volkswagen Golf GTI 2014',
+        'Volkswagen Polo GTI 2021',
+        'Volkswagen ID.3 2022',
       ]);
     });
 
@@ -50,7 +52,8 @@ void main() {
         sortOption: CarSortOption.priceLowToHigh,
       );
 
-      expect(results.map((car) => car.price), [8500, 18900, 19000, 123000]);
+      final prices = results.map((car) => car.price).toList();
+      expect(prices, orderedEquals([...prices]..sort()));
     });
 
     test('returns an empty list when no vehicle matches', () {
