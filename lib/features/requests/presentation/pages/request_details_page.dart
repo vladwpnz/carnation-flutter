@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:carnation/core/theme/carnation_theme.dart';
 import 'package:carnation/features/cars/domain/car.dart';
+import 'package:carnation/features/cars/presentation/widgets/car_image.dart';
 import 'package:carnation/features/requests/data/vehicle_request_repository.dart';
 import 'package:carnation/features/requests/domain/vehicle_request.dart';
 import 'package:carnation/features/requests/presentation/widgets/request_presentation_formatters.dart';
@@ -225,14 +226,13 @@ class _RequestIdentityCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(CarNationRadii.control),
               child: AspectRatio(
                 aspectRatio: 16 / 8,
-                child: request.car.imageAssetPath.isEmpty
-                    ? const _VehicleImageFallback()
-                    : Image.asset(
-                        request.car.imageAssetPath,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) =>
-                            const _VehicleImageFallback(),
-                      ),
+                child: CarImage(
+                  imagePath: request.car.imageAssetPath,
+                  brand: inferCarImageBrand(
+                    imagePath: request.car.imageAssetPath,
+                    displayName: request.car.displayName,
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 16),
@@ -403,24 +403,6 @@ class _DetailRow extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _VehicleImageFallback extends StatelessWidget {
-  const _VehicleImageFallback();
-
-  @override
-  Widget build(BuildContext context) {
-    return const ColoredBox(
-      color: CarNationColors.surfaceRaised,
-      child: Center(
-        child: Icon(
-          Icons.directions_car_filled_rounded,
-          size: 46,
-          color: CarNationColors.textMuted,
-        ),
-      ),
     );
   }
 }
